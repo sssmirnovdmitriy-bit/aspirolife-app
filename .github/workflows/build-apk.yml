@@ -50,3 +50,12 @@ jobs:
             build/app/outputs/bundle/release/app-release.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish App Bundle to Google Play (production)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.aspiroapp.aspirolife
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: production
+          status: completed
