@@ -1,0 +1,52 @@
+workflows:
+  ios-release:
+    name: iOS Release
+    instance_type: mac_mini_m2
+    max_build_duration: 120
+    integrations:
+      app_store_connect: Codemagic CI/CD
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.aspiroapp.aspirolife
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Reassemble source archive if split into parts
+        script: |
+          if ls app-source.zip.*.part >/dev/null 2>&1; then
+            cat app-source.zip.*.part > app-source.zip
+          fi
+      - name: Unzip project source
+        script: |
+          unzip -o app-source.zip -d .
+      - name: Fix syncfusion_flutter_pdfviewer version
+        script: |
+          flutter pub add syncfusion_flutter_pdfviewer:^31.1.21
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Get Flutter packages
+        script: |
+          flutter packages pub get
+      - name: Install pods
+        script: |
+          find . -name "Podfile" -execdir pod install \;
+      - name: Set version
+        script: |
+          cd ios
+          agvtool new-marketing-version 1.0.8
+          agvtool new-version -all $BUILD_NUMBER
+      - name: Flutter build ipa
+        script: |
+          flutter build ipa --release \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
