@@ -15,6 +15,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Reassemble source archive if split into parts
+        run: |
+          if ls app-source.zip.*.part >/dev/null 2>&1; then
+            cat app-source.zip.*.part > app-source.zip
+          fi
+
       - name: Unzip project source
         run: unzip -o app-source.zip -d .
 
