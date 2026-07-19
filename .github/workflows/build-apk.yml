@@ -20,8 +20,15 @@ jobs:
           if ls app-source.zip.*.part >/dev/null 2>&1; then
             cat app-source.zip.*.part > app-source.zip
           fi
+
       - name: Unzip project source
         run: unzip -o app-source.zip -d .
+
+      - name: Remove exact alarm permission (Play policy compliance)
+        run: |
+          sed -i '/SCHEDULE_EXACT_ALARM/d;/USE_EXACT_ALARM/d' android/app/src/main/AndroidManifest.xml
+          sed -i '/requestExactAlarmsPermission/d' lib/core/notifications/daily_reminder_service.dart
+          sed -i 's/AndroidScheduleMode\.exactAllowWhileIdle/AndroidScheduleMode.inexactAllowWhileIdle/' lib/core/notifications/daily_reminder_service.dart
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
