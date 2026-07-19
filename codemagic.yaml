@@ -6,6 +6,8 @@ workflows:
     integrations:
       app_store_connect: Codemagic CI/CD
     environment:
+      groups:
+        - ios_signing
       vars:
         BUNDLE_ID: "com.aspiroapp.aspirolife"
       flutter: stable
