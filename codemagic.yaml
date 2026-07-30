@@ -46,7 +46,7 @@ workflows:
       - name: Set version
         script: |
           cd ios
-          agvtool new-marketing-version 1.0.8
+          agvtool new-marketing-version 1.0.11
           agvtool new-version -all $BUILD_NUMBER
       - name: Flutter build ipa
         script: |
