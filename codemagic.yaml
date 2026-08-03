@@ -68,6 +68,7 @@ workflows:
     environment:
       groups:
         - android_signing
+        - google_play_publishing
       vars:
         BUNDLE_ID: "com.aspiroapp.aspirolife"
       flutter: stable
@@ -101,3 +102,8 @@ workflows:
     artifacts:
       - build/app/outputs/bundle/release/*.aab
       - flutter_drive.log
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: production
+        submit_as_draft: false
