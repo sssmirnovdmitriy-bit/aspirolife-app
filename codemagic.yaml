@@ -60,3 +60,44 @@ workflows:
       app_store_connect:
         auth: integration
         submit_to_testflight: true
+
+  android-release:
+    name: Android Release
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      groups:
+        - android_signing
+      vars:
+        BUNDLE_ID: "com.aspiroapp.aspirolife"
+      flutter: stable
+    scripts:
+      - name: Reassemble source archive if split into parts
+        script: |
+          if ls app-source.zip.*.part >/dev/null 2>&1; then
+            cat app-source.zip.*.part > app-source.zip
+          fi
+      - name: Unzip project source
+        script: |
+          unzip -o app-source.zip -d .
+      - name: Fix syncfusion_flutter_pdfviewer version
+        script: |
+          flutter pub add syncfusion_flutter_pdfviewer:^31.1.21
+      - name: Get Flutter packages
+        script: |
+          flutter packages pub get
+      - name: Set up Android keystore
+        script: |
+          echo $CM_KEYSTORE | base64 --decode > android/aspirolife-release-key.jks
+          cat > android/key.properties <<EOF
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyPassword=$CM_KEY_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          storeFile=../aspirolife-release-key.jks
+          EOF
+      - name: Flutter build appbundle
+        script: |
+          flutter build appbundle --release
+    artifacts:
+      - build/app/outputs/bundle/release/*.aab
+      - flutter_drive.log
