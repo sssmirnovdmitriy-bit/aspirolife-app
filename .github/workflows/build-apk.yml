@@ -36,7 +36,7 @@ jobs:
           channel: 'stable'
 
       - name: Fix syncfusion_flutter_pdfviewer version
-        run: flutter pub add syncfusion_flutter_pdfviewer:^31.1.21
+        run: sed -i 's#gradle-8.10.2-#gradle-8.14-#' android/gradle/wrapper/gradle-wrapper.properties
 
       - name: Get dependencies
         run: flutter pub get
