@@ -68,7 +68,7 @@ workflows:
         - google_play_publishing
       vars:
         BUNDLE_ID: "com.aspiroapp.aspirolife"
-      flutter: stable
+      flutter: 3.35.7
     scripts:
       - name: Reassemble source archive if split into parts
         script: |
