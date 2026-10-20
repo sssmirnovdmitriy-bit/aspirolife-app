@@ -92,7 +92,7 @@ workflows:
           EOF
       - name: Flutter build appbundle
         script: |
-          sed -i /billingclient/d android/app/build.gradle.kts && flutter build appbundle --release --build-number=15
+          sed -i.bak /billingclient/d android/app/build.gradle.kts && flutter build appbundle --release --build-number=15
     artifacts:
       - build/app/outputs/bundle/release/*.aab
       - flutter_drive.log
